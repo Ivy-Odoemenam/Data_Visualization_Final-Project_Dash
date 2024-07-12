@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
 
 
 import dash
@@ -20,7 +16,7 @@ data = pd.read_csv('https://cf-courses-data.s3.us.cloud-object-storage.appdomain
 app = dash.Dash(__name__)
 
 # Set the title of the dashboard
-#app.title = "Automobile Statistics Dashboard"
+app.title = "Automobile Statistics Dashboard"
 
 #---------------------------------------------------------------------------------
 # Create the dropdown menu options
@@ -42,7 +38,10 @@ app.layout = html.Div([
         html.Label("Select Statistics:"),
         dcc.Dropdown(
             id='dropdown-statistics',
-            options=dropdown_options,
+            options=[
+                {'label': 'Yearly Statistics', 'value': 'Yearly Statistics'},
+                {'label': 'Recession Period Statistics', 'value' : 'Recession Period Statistics'} 
+                ],
             value='Select Statistics',
             placeholder='Select a report type'
             
@@ -56,7 +55,7 @@ app.layout = html.Div([
             style={'width': 80, 'padding': '3px', 'font-size':20, 'text-align': 'center'}
         )),
     html.Div([#TASK 2.3: Add a division for output display
-    html.Div(id='output-container', className='chart-grid', style={'display':'flex'})
+    html.Div(id='output-container', className='chart-grid', style={'display':'flex'}),
     ])
 ])
 #TASK 2.4: Creating Callbacks
@@ -79,7 +78,7 @@ def update_input_container(selected_statistics):
     [Input(component_id='dropdown-statistics', component_property='value'), Input(component_id='select-year', component_property='value')])
 
 
-def update_output_container(input_year, selected_statistics):
+def update_output_container(selected_statistics,input_year):
     if selected_statistics == 'Recession Period Statistics':
         # Filter the data for recession periods
         recession_data = data[data['Recession'] == 1]
@@ -155,8 +154,8 @@ def update_output_container(input_year, selected_statistics):
 # Plot 2 Total Monthly Automobile sales using line chart.
         # grouping data for plotting.
 	# Hint:Use the columns Month and Automobile_Sales.
-        mas=data.groupby('Month')['Automobile_Sales'].sum().reset_index()
-        Y_chart2 = dcc.Graph(figure=px.line(mas,
+        #mas=data.groupby('Month')['Automobile_Sales'].sum().reset_index()
+        Y_chart2 = dcc.Graph(figure=px.line(yearly_data,
             x='Month',
             y='Automobile_Sales',
             title='Total Monthly Automobile Sales'))
